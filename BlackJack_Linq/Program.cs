@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Console;
+
 
 namespace BlackJack_Linq
 {
@@ -107,6 +109,87 @@ namespace BlackJack_Linq
                 //乱数によってソート
                 var shuffled = cards.OrderBy(_ => random.Next());
                 return shuffled;
+            }
+        }
+
+        //手札
+        class Hand
+        {
+            //内部的にカードのリストとして保持する
+            private IList<Card> Cards { get; }
+            public Hand() => Cards = new List<Card>();
+
+            //カードを一枚加える
+            public void Add(Card card) => Cards.Add(card);
+
+            //点数を決める
+            public int ComputeScore()
+            {
+                var sum = Cards.Sum(card => card.No > 10 ? 10 : card.No);
+                if(ContainsAce && sum <= 11)
+                {
+                    sum += 10;
+                }
+                return sum;
+            }
+
+            //エースが含まれているか？
+            private bool ContainsAce =>
+                Cards.Any(card => card.No == 1);
+
+            //手札の内容表示用
+            //join の説明　https://qiita.com/pierusan2010/items/f5f1487c03561cf4ec9f
+            //select の説明　https://www.sejuku.net/blog/47172
+            public override string ToString() =>
+                string.Join(' ', Cards.Select(card => card.ToString()));
+
+            public void FaceUpAll()
+            {
+                foreach(var card in Cards)
+                {
+                    card.FaceUp = true;
+                }
+            }
+        }
+
+        //プレイヤークラス
+        class Player
+        {
+            private Hand Hand { get; }
+            private Deck Deck { get; }
+            //名前
+            public string Name { get; }
+            //得点
+            public int Score => Hand.ComputeScore();
+
+            //バーストしているか
+            public bool IsBust => Score > 21;
+
+            public Player(Hand hand,Deck deck,string name)
+            {
+                Hand = hand;
+                Deck = deck;
+                Name = name;
+            }
+            //カードを一枚引く
+            public void Take(bool faceUp = true)
+            {
+                var card = Deck.Pop();
+                card.FaceUp = faceUp;
+                ShowTookCard(card);
+                Hand.Add(card);
+            }
+
+            //カードの表示
+            private void ShowTookCard(Card card) =>
+                WriteLine($"[{Name}] => {card}");
+
+            //手札を表示する
+            public void ShowHand()
+            {
+                Hand.FaceUpAll();
+                WriteLine($"[{Name}] => Hand: {Hand}");
+                WriteLine($"[{Name}] => Score: {Score}");
             }
         }
     }
