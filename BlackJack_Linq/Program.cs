@@ -126,6 +126,8 @@ namespace BlackJack_Linq
     {
         //内部的にカードのリストとして保持する
         private IList<Card> Cards { get; }
+        //インターフェースIList<T>のインスタンスは作成できない　https://www.atmarkit.co.jp/fdotnet/csharp_abc/csharp_abc_004/csharp_abc03.html
+        //https://www.slideshare.net/ryotamurohoshi/clistlttilist
         public Hand() => Cards = new List<Card>();
 
         //カードを一枚加える
