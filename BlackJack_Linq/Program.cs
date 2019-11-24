@@ -1,4 +1,6 @@
-﻿using System;
+﻿//参考引用：https://qiita.com/Nossa/items/b9298393439003997ed1
+//https://qiita.com/hirossyi73/items/cf8648c31898216312e5
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Console;
